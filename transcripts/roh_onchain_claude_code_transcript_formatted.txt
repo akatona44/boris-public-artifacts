@@ -1,0 +1,479 @@
+# Claude Code tips and workflow
+
+Source: X video by Roh OnChain, `https://x.com/RohOnChain/status/2072679625021587522/video/1`
+
+> Cleaned and formatted from auto-captions. Obvious ASR substitutions such as "Cloud/Claw/Cloth Code" have been normalized to "Claude Code." A few uncertain words are marked as `[unclear]`.
+
+## Introduction
+
+I tried to count the number of slash commands that are available at the moment. I found 96, and honestly, I did not look at Twitter today, so I do not know if it is already 97. Things are moving too fast. It is really hard to keep up with what is happening.
+
+During the past few months, I have been running workshops with companies where I teach about Anthropic Claude Code. I realized one thing: often we start with Claude Code, and because it is so powerful, we start writing code, debugging, fixing bugs, all of that. Then we quickly stop digging deeper.
+
+It stops for a reason. It is so powerful that you see a big incremental performance gain in your productivity. Because of that, you do not feel the need to dig deeper into the tool. It is already helpful. But there is more that you can do, at least I believe so.
+
+I believe most of us get to the first 5%, 10%, maybe 20%, and then we do not keep digging because it is already powerful. Also, if you tried it in January, it now has so many new things that it is hard to keep up.
+
+My goal for this session is to go through four different types of things:
+
+1. Things you can set up once and take advantage of in your Claude Code installation forever.
+2. Things you can do in your daily workflow: small tips and tricks that improve your day-to-day cycle.
+3. Things that make Claude Code extensible, and why I think of Claude Code as more than just a coding tool.
+4. Things beyond code.
+
+I want to warn you about something important. This is not a getting started talk for Claude Code. This talk is for people who, at least once in their lives, opened a terminal and ran Claude. You tried something with Claude Code. I want to share things that come from my own experience using it every day.
+
+I have no affiliation with Anthropic. This is not a sales talk. It is a talk from someone who uses Claude Code every day, teaches it to other people, and really likes it. I want to share not only the features, but also the types of problems they solve in my day to day.
+
+This is a rapid-fire talk. I will share roughly 40 tips in one hour. The goal is not to go deep into each one. The goal is to show what you can do. If, by tomorrow or next week, you apply two or three of these 40 tips, that is a huge success for me. It means you took something home that you were not familiar with and that can actually help your daily work.
+
+## Where to run Claude Code
+
+The first thing to clarify is where you run Claude Code.
+
+You can install it in something like the desktop application, or inside an IDE like VS Code. But the terminal is usually where you get features first. That is why I usually use the terminal, and why you will see a lot of screenshots of features inside the terminal.
+
+That does not mean those features are unavailable on other platforms. But keep in mind: they usually arrive first in the terminal.
+
+## Setup: things you do once
+
+Let us start with setup: the things you do once and then benefit from for the rest of your life using Claude Code, until Claude Code is replaced by something else.
+
+### Use `CLAUDE.md`, but keep it focused
+
+The first important artifact inside a project where you use Claude Code is `CLAUDE.md`.
+
+If you come from other tools, you may be familiar with `AGENTS.md`. `CLAUDE.md` is basically the heart and soul of the agent you have in your project. It describes rules, what is inside the project, frameworks, how to run commands, and so on.
+
+Sometimes, after working for a while on one project, I start seeing duplication. I see rules in Markdown files, descriptions in the README, and instructions on how to run the pipeline inside `CLAUDE.md`.
+
+You can avoid that duplication. `CLAUDE.md` can use the `@` symbol to import a file. You mention the path, and when a Claude session starts, it loads not only `CLAUDE.md`, but also those referenced files. This is a quick way to reduce duplication.
+
+It is extremely useful, and you can use it for files that are not Markdown. If you have an API schema that is important for the project, you can include it that way. You can also use relative paths.
+
+But do not take this too far.
+
+I used to believe `CLAUDE.md` was so important that any single thing I could think of should go there. It would become extremely descriptive. Last year, if I had delivered the same talk, I would have said: "Anything that comes to mind, write it there to improve agent performance."
+
+Things changed. This space is so fresh and so new that many things we say are based on feelings, personal opinions, or things we read or heard in talks. They might not actually be true.
+
+Someone took on the challenge of running a study at ETH Zurich. They looked at many projects and created `CLAUDE.md` and `AGENTS.md` files for them. They used some projects without `CLAUDE.md`, others with machine-generated `CLAUDE.md`, and others with human-curated `CLAUDE.md`. They reached one conclusion: when you have something too specific, performance can start to drop, and cost can increase by more than 20%.
+
+Tokens are expensive, so this matters.
+
+Nowadays, when reviewing `CLAUDE.md`, I follow three questions.
+
+### Question 1: do I need this for every conversation?
+
+In the context of this project, for 95% of the conversations I will have, is this information relevant to producing a better outcome?
+
+If not, maybe move it away. Evaluate it. Otherwise, keep it there.
+
+### Question 2: is this specific to one task, file type, or technology?
+
+Maybe the instruction only matters once in a while. Maybe it only matters for a given type of file.
+
+Imagine a project with different technologies: .NET, JavaScript, Python. Some rules are required for only one part of the project. For example, instructions for running tests depend on the technology.
+
+In those cases, you can do one of two things:
+
+- Create an agent skill and move those instructions there.
+- Create a Claude rules file inside your `.claude` folder.
+
+The benefit of rules files is that you can use a glob pattern to apply them only to a given type of file or folder. They only apply when you are working with those files.
+
+### Question 3: can the agent find this by itself?
+
+Sometimes I used to write the complete tree of files and folders. I would describe how to navigate my code: where controllers go, where models go, where views go, where services go, what lives inside the infrastructure folder. I was trying to give the agent a map.
+
+But agents are smart now. Those instructions can become outdated, and agents can inspect the actual folder structure. Understanding what is on disk is not that hard for the agent anymore.
+
+The recommendation from ETH Zurich is: do not include things the agent can quickly find by itself.
+
+## Personal preferences: use local and global instructions
+
+When I work with `CLAUDE.md`, especially in projects with other people, some things are actually personal preferences.
+
+For example, I am a huge fan of test-driven development, but I work with people who do not like it. I do not want to force everyone to go through it.
+
+My first idea was: "Let us put that inside `CLAUDE.md`." But `CLAUDE.md` might not be the right place, because that is shared with the team.
+
+Instead, you can create a personal local file. Go to your `.claude` folder and create `CLAUDE.local.md`. You can gitignore that file. Claude will pick it up, put your preferences into the context window, and use them without affecting other people.
+
+But what if this preference applies to every single thing you do with Claude Code?
+
+In that case, do not put it inside a repo. Put it in your user profile. On Windows it is in a slightly different place, under your AppData folder. On macOS, you will find a `.claude` folder. Create a `CLAUDE.md` there, and it applies to every Claude session you open on your machine.
+
+If you like concise language, or prefer communication with bullet points, write it there. It will apply in every session you have with Claude Code.
+
+## Protect sensitive files with permissions
+
+This one is extremely important. Please do this.
+
+Claude Code can be very helpful. It says things like, "You are right, let us do it," or "I was wrong, sorry for that." When you ask Claude to do something, it tries to achieve that mission like it is the goal of its life.
+
+Say I am trying to fix a bug about a database connection. I have an exception, and I prompt Claude: "Please help me fix this." Claude goes on a journey to find the reason. It may decide the problem is with connection strings, so it starts looking through settings files, environment files, user secrets, and other files depending on the technology.
+
+That is a problem, because those files may go into the context window. If they get into the context window, they go to Anthropic. That is not great.
+
+By default, the tools do not stop this. So go to your project, create `.claude/settings.json`, and define denied permissions. You can deny reading files like environment files, user secrets, and other sensitive files.
+
+You can also deny running certain bash commands. For example, if you are a .NET developer, you can deny `dotnet user-secrets`. Ideally nobody puts production keys in a local repo, but it happens. You want to protect the rest of the team.
+
+The same idea applies globally. You can go to your user profile and create a global `settings.json` that denies certain files or commands across all projects.
+
+## Add a status line
+
+Sometimes I am working with Claude and I start a conversation inside a folder in a repo. I keep working for a while. I may open a couple of terminals to work on different things. Eventually I do not know where I am working or what I am doing.
+
+You can create a status line. It always shows up under the prompt. You can prompt Claude to add things there using natural language.
+
+My favorite status line items are:
+
+- Git branch.
+- Model being used.
+- Available context: am I consuming 2% or 80%?
+
+You can see that at any moment while working.
+
+If you do not know what to add, ask Claude which items are available. Claude will suggest things that might be useful.
+
+That closes the setup section.
+
+## Daily workflow
+
+Now let us go to the big one: daily workflow.
+
+### Use plan mode, then edit the plan directly
+
+If you have used Claude, Copilot, or similar tools, you are probably using something like plan mode.
+
+The idea of plan mode is that before asking your agent to go and do something, you first ask it to come up with a plan or strategy, then execute that strategy. Otherwise it is like trying to go somewhere without knowing where to go. You may eventually get there, but it is not the most efficient way.
+
+One thing that used to happen to me a lot: I would see the plan and ask Claude to change it. Sometimes I read the plan and do not like the strategy. My default way to fix it was to prompt again: "Instead of doing X, let us do Y."
+
+You can do something smarter, especially for small changes.
+
+When you use Shift+Tab to enter plan mode and get a plan, use Ctrl+G. Ctrl+G opens the plan as Markdown in edit mode. You can navigate the file, adjust what you want, save it, go back to the terminal, and continue.
+
+If you are in VS Code, it feels like magic. You save time, tokens, and sanity.
+
+### Ask Claude to interview you before writing a spec
+
+I like specification-driven development: first you come up with a spec, usually a large document, then you prompt the agent to implement it.
+
+I like the approach, but sometimes I realize I am not seeing the full picture when I ask the system to create the specification. I also realized Claude often fills gaps with assumptions, and I do not notice those assumptions until something is implemented.
+
+Nowadays I ask Claude to interview me.
+
+Claude has something called the "ask user question" tool. You usually see it in plan mode as a multi-option question: "Do you want option A or option B?" That is the tool in action.
+
+I like to force Claude to use it. I prompt Claude with something like:
+
+> Please interview me about every single thing inside this document that might be an assumption. Do not stop until everything is clear.
+
+Then I start noticing assumptions I never thought about. After that clarification process, Claude can create the specification again. It is extremely useful.
+
+### Rewind instead of correcting forward
+
+Another thing happens with plans.
+
+Claude comes back and asks: "Do you want approach A or B?" For example, maybe approach A uses MVC controllers and approach B uses minimal API endpoints. You choose one, Claude implements it, and at the end you look at the code and think: "I do not like this. It is too much for what the application does."
+
+The usual reaction is to prompt Claude again and ask it to convert the thing to the other approach.
+
+But when you do that, you add a new message into the context. All the previous research and implementation stay there. That previous implementation influences future iterations, and it also consumes tokens.
+
+Claude Code has a kind of time travel feature. You can use double Escape or `/rewind` to go back in the conversation. Pick the point where you decided on option A. Instead of trying to fix it by moving forward, take one step back and then go forward in the right direction.
+
+### Switch models and effort levels during a conversation
+
+Once you have a plan, that is the moment when the heavy lifting has happened. Reasoning is important there. A powerful model matters.
+
+But after you have a proper, detailed plan, sending the implementation to a cheaper model can be a good idea. It saves time and tokens. The cheaper model can often follow instructions just fine.
+
+You can switch models in the middle of a conversation. You do not need to pick one model and stick with it. This is especially useful if your status line shows the current model.
+
+There is also another layer: effort level. Each model can run at different effort levels. You can run `/effort` and say something like: from now on, use Opus with extra-high effort. You will spend more money, but for complex tasks it can be extremely useful.
+
+That changes the rest of the conversation from that point onward. You can also lower the effort level.
+
+If you only want one prompt to run with extra effort, use `ultrathink`. Write your prompt and include `ultrathink`. It even shows up like a rainbow. It means: this prompt is important; do your best; use the tokens you need to find a solution.
+
+### Use `/btw` to ask while Claude is working
+
+Sometimes Claude is working and you wait until it finishes. If you write another prompt, it goes into the queue and only runs afterward.
+
+Instead, use `/btw`, short for "by the way." Claude can be working for five minutes, and you can ask a question about the past conversation without starting a new session and losing context. It runs in parallel, gives you the answer, and Claude keeps going.
+
+It removes a blocker and is very useful.
+
+### Track usage and cost
+
+Use `/usage`.
+
+It gives you a graphic where you can see which model you used most, when you used each model, token consumption, and cost, all without leaving the terminal. You can find more detail there than on the website.
+
+Cost is highly related to context. Context is the set of things we send in a conversation to Anthropic. Each prompt is evaluated as part of a huge conversation, and we need to maintain that.
+
+At any moment, if your application is at 60% context, you can run `/context`. It shows a visualization of what is in the context.
+
+Here is the challenge: open an empty Claude session and run `/context`. You may discover things inside your context window that are used only once in a while: MCP servers you installed a long time ago just to explore, or agent skills you installed because they looked cool but you do not use daily. Those are loaded by default.
+
+This is a good way to audit your setup.
+
+Why does this matter? With Opus, we may have one million tokens, but from the experience of many people, once you consume too much of the context window, you enter what Dexter [unclear: Othry] from HumanLayer calls the "dumb zone." You start seeing responses with worse quality, accuracy, and grounding. It also takes more time.
+
+When Claude reaches the limit, it usually runs compact automatically. Compact looks at the huge conversation, creates a summary, and replaces most messages with that summary. You keep the main facts and can continue. A conversation may go from 99% context consumption down to 15% or 20%.
+
+You can trigger that yourself. Often we ignore it. From now on, when you see you are above the "dumb zone," around 50% context or more, start thinking about running `/compact`. Do not try to keep the same session forever. Compact frequently when it makes sense, or start a new conversation with `/clear`.
+
+### Audit memories
+
+There is something inside Claude that can become a problem when you work in the same project for a long time: memories.
+
+In the keynote we learned how dangerous they can be. Memories can be useful, and Claude has auto memories. It can infer that something should be stored in a memory file.
+
+For example, if you are working with Claude and you reply, "I prefer to see this type of information as a diagram," Claude may decide to remember that for next time. The memory is just a file, and that information stays there forever in that project.
+
+Eventually you may not need it. It may have been relevant only to a specific activity. But it still goes into your context.
+
+Run `/memory` and audit what is there.
+
+By the way, one of the most interesting experiences in my life, and I hope my wife is not watching this, was going into my ChatGPT memories. You should try it. Sometimes ChatGPT was calling me Emily. I do not know why. It had stored things that made no sense. Cleaning memory can improve outcomes.
+
+### Use bash mode for simple commands
+
+I have a habit of asking Claude to commit things for me. It is comfortable.
+
+But for simple commands like `npm test`, `npm run ...`, or `dotnet test`, you can use `!` to go into bash mode. Everything you type after `!` runs as a bash command.
+
+This skips the reasoning process of interpreting your instruction. Claude does not need to look at `git status` and think about what to do. It just runs the command.
+
+Keep in mind: the result of that command goes back into the context window. If the command exposes sensitive information, do not run it inside Claude, because it may enter the context window.
+
+### Resume old work
+
+This happens to me a lot. A couple of weeks ago, I was working on a project with a client. I had to stop because I came to Oslo from Portugal, closed everything on my laptop, and focused on the workshop.
+
+The next week, I wanted to return to the work.
+
+You can use `/continue` or `--resume`. `/continue` goes back in time and picks the most recent thing you were doing. `--resume` displays all past conversations in that project, and you can pick the one you want to return to.
+
+When you move back and forth between tasks, this is extremely useful.
+
+### Use remote control from your phone
+
+Story time.
+
+A couple of weeks ago, my father had to go to the hospital for an exam, and he asked me to pick him up. I was working on a project and was in a rush. Usually either I would be late picking up my father, or late on the project.
+
+I ran `/remote-control`. It opened a tunnel with Anthropic. Then I picked up my phone, went where I needed to go, left my laptop at home, and kept working through my phone.
+
+Nowadays I use this not only for this kind of situation. When I define a plan and the only thing left is execution, I pick up my phone and go for a walk. I get notifications from Claude asking, "Do you want to continue?" or "Do you approve this change?" I answer yes or no, fix things, keep going, and get the feature I want without staying at my desk.
+
+We can discuss work-life balance, I know. But honestly, I think this can improve the way I work.
+
+### Use voice mode for rubber ducking
+
+Remember the days when everyone was in the office at the same time? Maybe that is still your case. Before the pandemic, I could go to a colleague's desk and explain a problem I was having. In the middle of the conversation, I would say, "Ignore it, I know how to fix it."
+
+We call that rubber ducking. When we speak, connections start to appear. When we write, it can be harder. At least it is harder for me.
+
+Claude exposes voice mode. Go to your code and type `/voice`. From that moment on, if you press the space bar, Claude listens to you. You can write a prompt with voice.
+
+You may say: "When I talk, I am not as eloquent as when I write. My thoughts are not as expressive or well defined." But the LLM does not care if you ramble. It will find the meaning. Often, in the middle of talking, you will realize you were wrong. You can always edit the prompt generated from your voice.
+
+Using voice is one of those things that changed how I work. If you work in an open office, it is a bit awkward. But if you are at home, try it.
+
+### Paste images into the terminal
+
+We have text and audio. The other component is images.
+
+For people who work with UIs, like frontend development, you can paste images into the terminal. Not only into the Claude app, but into the terminal too.
+
+On macOS, Command+V does not work for this. Use Control+V. You can also drag and drop images into the terminal.
+
+For example, go to a company's website, or receive a Figma from a designer, take a screenshot, and paste it into the conversation. Now Claude has not only the text prompt but also the visual context. It can compare and extract information from the image. This is extremely useful.
+
+### Work in parallel with worktrees, color, and rename
+
+The way we work is changing. We used to focus on one task: finish it, then go to the next one. Nowadays, people expect us to work on many things in parallel, because otherwise we ask the agent to do something and then wait. It asks for approval, and we wait again. It gets boring.
+
+So we start working on different tasks and projects. That is fine. Open two terminals. No big deal.
+
+The problem is that most of us work with Git, and sometimes you want to work on different things in the same project: a feature, a bug fix, a code review, all at the same time. You can do that with worktrees.
+
+A worktree is a bit strange if you are not used to it. Think of it as having the same repo checked out in multiple working folders, each on a different branch.
+
+Now you may have many terminals at the same time, and you do not know which is doing what. Use `/color` and `/rename`. Pick a color for the conversation and assign a name. For example: this one is "fix issue X," this one is "feature Y." When you look at your terminals, visual recognition helps: blue is the feature, red is the bug.
+
+### Use `/goal` and auto mode to reduce babysitting
+
+One thing that is not great when working in parallel is babysitting Claude Code. It keeps asking for permissions: do you accept this, do you accept that?
+
+There is a newer feature: `/goal`.
+
+You can write `/goal` and define what Claude needs to do, plus a condition for when to stop. Think of it as a measurable objective.
+
+For example, if you are building an invoice generator, you can prompt:
+
+> Build the invoice generator feature and endpoint. Only stop when you have a test that generates an invoice with a PDF like this one.
+
+Claude goes on that journey and will not stop until it reaches the condition, or until tokens run out.
+
+This pairs well with another newer thing: auto mode. Auto mode lets Claude decide whether something is safe to accept, such as a bash command. For things it recognizes as safe, Claude can make the decision for you. There is an extra cost, but day to day it is useful.
+
+### Use Claude Code agents and the dashboard
+
+You can run Claude Code agents. If you have used something like Cursor agent mode or Codex, this will feel familiar.
+
+Start Claude with agents, then go into the agent dashboard. From there you can see tasks in progress, tasks blocked waiting for input, tasks still working, and tasks completed. You can also generate new tasks.
+
+If you want to work in parallel in the same project, this is great. It is easier to manage from one window than from many tabs.
+
+It is not for everyone. You may prefer another approach, and that is fine.
+
+## Claude Code as a platform
+
+I see Claude Code not only as a development tool, but also as a platform, because we can extend it. Claude is running a set of tools, and there are ways to define your own tools.
+
+### Use hooks to save money and catch mistakes early
+
+One extension point I like is hooks.
+
+I like hooks for two reasons: I like saving money, and I like spotting my mistakes as soon as possible. Maybe that comes from being used to test-driven development. When something is wrong, I want to stop.
+
+You can go to `settings.json`, the same file where you define denied permissions, and define hooks such as `postToolUse`. A hook can run after Claude does something.
+
+For example, after Claude edits a file, you can run a formatter. This is deterministic work that does not need model tokens, so you save money. Hooks can also stop the process when something goes wrong, so you notice errors earlier.
+
+If you have instructions in `CLAUDE.md` like "always run the tests at the end," consider using a hook. Do not rely on Claude always remembering. Hooks are extremely useful.
+
+### Think beyond `SKILL.md`: skills can include scripts and docs
+
+Everyone has agent skills. Everyone is shopping around the web for skills.
+
+An agent skill is a package of instructions and files. It has a description in YAML that Claude loads by default. When you ask for something related to that skill, Claude can invoke it. You can also call skills with a slash command using the name you defined.
+
+The problem is that we often think about skills as only a `SKILL.md` file: a recipe. For example, I have a skill for how I like to review code, and it may have a long README explaining the process.
+
+But skills can contain other things too, such as scripts.
+
+If you have tasks in a project like cleaning a folder, moving files around, or calling an API to extract data, you can package that as a skill.
+
+Recently I had to integrate with an API that had a couple of old endpoints used only once in a while. My first thought was to create an MCP server, because MCP servers connect services. Then I thought: why bother? I already had a Python script on my machine. I put the Python script inside a skill, with a README explaining how to use it.
+
+That is like packaging a small application inside your Claude folder. You can also add reference documentation for scenarios like API failures.
+
+### Use Anthropic's built-in skills before creating your own
+
+I feel like we all build our own skills or shop around for skills that others created, while ignoring the fact that Anthropic exposes the skill set they use day to day to build Claude Code as part of the product.
+
+You have a set of skills inside the product by default. You do not need to install anything. They are quite good.
+
+One I use a lot for major refactoring is `[unclear: /patch or /batch]`. It splits work into many units and runs several agents in parallel. If you want to upgrade many files or apply the same change across many files in your system, you can use that skill to split the work instead of building the process yourself.
+
+Another common case is code review. Many people create skills for code review, but there is already a good one: `[unclear: /simplify or /simplify-complex]`. It comes back with recommendations and can implement proposed changes.
+
+Before creating your own, try the built-in ones.
+
+### Use `/loop` for repeated checks
+
+Sometimes you push something to GitHub and it triggers CI/CD. Maybe it is supposed to deploy to QA or a testing environment. Then you sit there refreshing the GitHub dashboard: is it finished? Is it finished?
+
+Instead, put the agent to work. Use `/loop` and define a frequency, for example every five minutes. The loop can run a prompt or call an MCP server. If you have a GitHub MCP server, you can integrate it. Then you can keep working while Claude checks the status for you.
+
+### Use project-local MCP configuration
+
+Everyone looks around for what others do. There are many databases online for skills. Anthropic also has something that feels like a marketplace for plugins: packages that can include hooks, skills, and MCP servers together.
+
+You might install one of those. Or you might install an MCP server because there is an MCP server for a tool you use.
+
+By default, they are installed in your user profile. That means if you work on project A and project B, and project A uses GitHub while project B uses Bitbucket, you may still have the Bitbucket MCP loaded in project A. The same applies to skills and MCP servers.
+
+That is not great.
+
+Instead, create a `.mcp.json` file in the project folder. There you can define the MCP servers you want to share with your team. They are only loaded in the context of that project. When you start Claude inside that project, you have those MCPs. In other projects, they are not there.
+
+This saves money and avoids the nightmare where some team members have one setup and others have another.
+
+### Run Claude Code headlessly
+
+You can run Claude Code in headless mode. It does not need to open and wait for you.
+
+If you pass `--print`, the text that follows is the prompt. For example:
+
+```bash
+claude --print "Summarize this folder"
+```
+
+That means you can do powerful things with piping. Inside scripts, complex shell scripts, or PowerShell, you can integrate Claude as the reasoning part of the process. It does not stop and wait for you.
+
+That closes the platform section.
+
+## Beyond code
+
+Now let us talk about things beyond code.
+
+### Use Claude Code with notes
+
+For context, I am quite addicted to productivity tools. Maybe that is the reason I am doing this talk.
+
+Note taking has always been something I struggled with. I know how important it is to take notes, but I never found a tool that did not feel like I was working for the tool instead of the tool working for me.
+
+I used OneNote. I used Apple Notes. I used everything you can imagine. I used Obsidian. I still struggled.
+
+Recently I looked at my notes and thought: Obsidian is basically an application on top of Markdown files. Markdown files live on my machine. AI loves Markdown files. Claude likes files on my machine. Why not use both together?
+
+Now I have a vault with my notes. In Obsidian, a vault is just a folder of plain old Markdown files. I can ask questions about my notes. I can summarize my notes. I can create connections between notes, and Obsidian can show those nice graphs that look awesome on a slide, even if they are not always useful.
+
+You can also embed Claude Code as part of that experience as a terminal. When you are working on something, or want to pull information from websites into your notes, you can do that in the same way you do it with code.
+
+One problem with Claude Code is the assumption that it is only for code. It is more than that. Claude has products like Claude.com and Claude Code. For someone comfortable with a terminal, Claude Code is the most powerful one.
+
+### Generate work summaries from your activity
+
+You know when you go to a one-on-one meeting and need to explain what you have been working on? Or every three months you have an evaluation period and need to show achievements?
+
+That is hard. You need to go back through notes, Jira, calendar entries, and other systems to reconstruct what happened.
+
+You can ask Claude Code to help. For code contributions, Claude has access to those files and can understand the context of what you have been doing. You can ask: "Summarize what I did last week" or "Summarize what I did last month."
+
+If you want, you can create a skill for this and put it in a folder or in your user profile. When it is time to send the summary to your boss, run that skill and you have everything ready.
+
+### Use headless mode for logs and files
+
+You can also use Claude Code in more programmatic day-to-day tasks.
+
+Say you have a lot of log files in a folder, or Windows Event Viewer has a lot of errors, and you want to understand what is there. Instead of writing a custom script, you can run Claude in headless mode and ask it to summarize the files.
+
+You should not expect Claude to open interactively. It returns the summary.
+
+### Organize your Downloads folder
+
+You might be like me: I have a Downloads folder that only works in one direction. It grows until I get a warning saying my disk is almost full, and then I need to delete stuff.
+
+But I never know what is there. I am afraid of losing something I will never need, which is true, but I still do not want to delete it because who knows?
+
+Looking at a folder like that is scary. Last week I had 1,626 items there. Some of them were folders, so there were even more items inside.
+
+Why not put Claude Code to work?
+
+I open Claude Code and prompt it to go through my Downloads folder and organize it by type. By the end, I have folders like installers, code, documents, and so on. For example, code in Downloads probably is not important; if it matters, it is on GitHub. Those files can be deleted right away. For the other categories, I know what I am looking at.
+
+The goal is to start thinking about Claude Code as much more than something that writes code, reviews code, and fixes bugs. It is an extremely powerful tool you can use day to day to simplify your life.
+
+## Closing
+
+I hope you learned one or two things with me today. If you apply one or two, I will be very happy.
+
+But if you do not run any of these commands, at least run one command, because I learned more from it than from reading LinkedIn posts for three hours:
+
+```text
+/insights
+```
+
+If you run `/insights`, you get a report from Claude explaining how you use Claude Code: the types of work you usually do, and the types of skills you could create. It is bigger than what I can show here, but if you go through it, you will learn a lot about what you do day to day.
+
+I hope you learned something from me today. If there is something I did not mention, see you around. Have a great conference. Thank you.
